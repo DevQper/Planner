@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasks history</title>
+</head>
+<body>
+{% for task in Task_History %}
+<br>
+{{ task.name }}
+<br>
+{{ task.goal }}
+<br>
+{{ task.date_end }}
+<br>
+{% endfor %}
+<br>
+</body>
+</html>

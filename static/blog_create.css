@@ -1,0 +1,97 @@
+header {
+    margin: 44px auto;
+    max-width: 95%;
+    display: -webkit-flex;
+    display: -ms-flex;
+    display: flex;
+    -ms-align-items: center;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(52, 79, 121, .56);
+}
+
+header .mnu_top {
+    list-style-type: none;
+}
+
+header .mnu_top li {
+    display: inline-block;
+    margin-right: 75px;
+}
+
+header .mnu_top li a {
+    display: block;
+    text-decoration: none;
+    color: #4f4c67;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+header .btns {
+    list-style-type: none;
+}
+
+header .btns a {
+    display: inline-block;
+    margin-right: 75px;
+    text-decoration: none;
+    color: #4f4c67;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+header .username {
+    text-decoration: none;
+    color: rosybrown;
+    font-size: 25px;
+    font-weight: 600;
+    display: inline-block;
+    margin-right: 35px;
+}
+
+.form_for_blog {
+    min-width: 500px;
+    min-height: 470px;
+    background-color: #fdeaff;
+}
+
+.title_form {
+    font-size: 40px;
+    font-weight: 700;
+    margin: 0px 0px 30px 0px;
+}
+
+.items {
+    margin-bottom: 20px;
+}
+
+.name {
+/*    height: 15px;
+*/    width: 97%;
+    margin: auto;
+}
+
+.description {
+    height: 150px;
+    width: 97%;
+    margin: auto;
+}
+
+.description .new_blogs {
+    height: 150px;
+    width: 65%;
+}
+
+.button a {
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    max-width: 115px;
+    max-height: 55px;
+    font-size: 30px;
+    padding: 15px;
+    background-color: #60cc70;
+    border-radius: 35px;
+    margin-left: 3%;
+    margin-top: 30px;
+}

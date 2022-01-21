@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+{% load static %}
+{% load account %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="{% static 'style.css' %}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;1,100&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <ul class="mnu_top">
+        <li><a class="history_form1" href="{% url 'history_tasks' %}">История</a></li>
+        <li style="font-size: 25px;"><a href="#form_send" class="open_form">Создать задачу</a></li>
+        <li><a href="{% url 'new_blog' %}">Создать блог</a></li>
+    </ul>
+    <div class="btns">
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+            <a href="{% url 'user_profile' %}"><span class="username">Вход выполнен как: {{ user.username }}</span></a>
+            <a href="{% url 'account_logout'%}">Выйти</a>
+        {% else %}
+            <a class="primaryAction" href="{% url 'account_login' %}" type="submit">Войти</a>
+            <a href="{% url 'account_signup' %}">Регистрация</a>
+        {% endif %}
+    </div>
+</header>
+
+{% if Task_list %}
+{% for task in Task_list %}
+<div class="all_tasks" id="all_t">
+    <div id="task_name" class="task_name">
+        {{ task.name }}
+    </div>
+    <div id="task_goal" class="task_goal">
+        {{ task.goal }}
+    </div>
+    <div id="date" class="task_date_end">
+        {{ task.date_end }}
+    </div> - <span id="time_{{task.id}}" class="badge badge-success mr-3 p-3">yahoo!</span>
+    <p id="{{task.id}}" class="test_p">{{ task.date_end|date:'c' }}</p>
+    <form action="{% url 'delete_task' task.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+    </form>
+    <form action="{% url 'my_complete_task' task.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Complete</button>
+    </form>
+</div>
+
+
+<script>
+    function getTimeRemaining(endtime) {
+        var t = Date.parse(endtime) - Date.parse(new Date())
+        var seconds = Math.floor((t / 1000) % 60);
+        var minutes = Math.floor((t / 1000 / 60) % 60);
+        var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+        var days = Math.floor(t / (1000 * 60 * 60 * 24));
+        return {
+            total: t,
+            days: days,
+            hours: hours,
+            minutes: minutes,
+            seconds: seconds
+        };
+    }
+
+    function initializeClock(id, pk, later) {
+        var clock = document.getElementById(id);
+
+        function updateClock() {
+            var t = getTimeRemaining(later);
+
+            if (t.total <= 0) {
+                clearInterval(timeinterval);
+                //alert("Task end")
+                end_task(pk)
+            }
+
+            clock.innerHTML =
+                `D ${("0" + t.days).slice(-2)} : H ${("0" + t.hours).slice(-2)} : M ${("0" + t.minutes).slice(-2)}
+                : S ${("0" + t.seconds).slice(-2)}`;
+        }
+        updateClock();
+        var timeinterval = setInterval(updateClock, 1000);
+    }
+
+    function start() {
+        let t_p = document.querySelectorAll(".test_p");
+        for (let i of t_p) {
+            let deadline = new Date(Date.parse(i.innerHTML));
+            console.log("deadline", deadline)
+            initializeClock("time_" + i.id, i.id, deadline);
+        }
+    }
+
+    function end_task(id) {
+        let csrftoken = Cookies.get('csrftoken');
+        let data = {
+            pk: id,
+        };
+        fetch("http://127.0.0.1:8000/completeness/"+id, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                "X-CSRFToken": csrftoken
+                //'Content-Type': 'application/x-www-form-urlencoded',
+            },
+           // body: JSON.stringify(data),
+        })
+        .then(response => {
+            if (response.status === 200) {
+                alert("Task end server");
+            }
+        })
+    }
+
+
+    start()
+
+
+</script>
+
+{% endfor %}
+{% endif %}
+
+<div id="form_send" class="form_send">
+    <div class="form_send_body">
+        <div class="form_send_content">
+            <a href="#" class="form_send_close">X</a>
+            <form action="{% url 'add_task' %}" method="post" class="mt-4">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Добавить">
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="end_tasks" class="end_tasks">
+    <div id="end_content" class="end_content">
+        {% for task in complete_tasks %}
+        <br>
+        {{ task.name }}
+        <br>
+        {{ task.goal }}
+        <br>
+        {% endfor %}
+        <br>
+    </div>
+</div>
+
+<div class="Success_Rate">
+    {{success_rate1}} % успеваемость
+</div>
+
+{% for blogs in Blogs_list %}
+<div class="Blog_View">
+    <div class="description"></div>
+        {{ blogs.date_create }}
+    </div>
+    <div class="Bloks_for_Blogs">
+        <div class="name_user">
+            {{ blogs.name_user }}
+        </div>
+        <div class="description"></div>
+            {{ blogs.description }}
+        </div>
+    </div>
+    <div class="AddReview">
+        <form method="post" action="{% url 'add_review' blogs.id %}" class="mt-4">
+            {% csrf_token %}
+            <div class="description">
+                <h4>Содержание</h4>
+                <textarea id="new_blog" name="text" class="new_blogs"></textarea>
+            </div>
+            <div class="button">
+                <button type="submit">Опубликовать</button>
+            </div>
+        </form>
+    </div>
+    {% for review in blogs.reviews_set.all %}
+    <div class="ViewReview">
+        <div class="name_author">
+            {{ blogs.name_user }}
+        </div>
+        <div class="text">
+            {{ review.text }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+</body>
+</html>

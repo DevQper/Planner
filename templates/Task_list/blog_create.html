@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="{% static 'blog_create.css' %}" rel="stylesheet">
+    <title>New Blog</title>
+</head>
+<body>
+<header>
+    <ul class="mnu_top">
+        <li><a class="history_form1" href="{% url 'history_tasks' %}">История</a></li>
+        <li style="font-size: 25px;"><a href="#form_send" class="open_form">Создать задачу</a></li>
+        <li><a href="{% url 'most_page' %}">Вернуться на главную</a></li>
+    </ul>
+    <div class="btns">
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+            <a href="{% url 'user_profile' %}"><span class="username">Вход выполнен как: {{ user.username }}</span></a>
+            <a href="{% url 'account_logout'%}">Выйти</a>
+        {% else %}
+            <a class="primaryAction" href="{% url 'account_login' %}" type="submit">Войти</a>
+            <a href="{% url 'account_signup' %}">Регистрация</a>
+        {% endif %}
+    </div>
+</header>
+
+<div class="form_for_blog">
+    <form action="" method="post" class="blog_send">
+        {% csrf_token %}
+        <div class="items">
+            <h1 class="title_form">Новый блог</h1>
+            <div class="name">
+                <h4>Заголовок</h4>
+                <input id="name_blog" type="text" name="name_blog">
+            </div>
+            <div class="description">
+                <h4>Содержание</h4>
+                <textarea id="new_blog" type="text" name="description" class="new_blogs"></textarea>
+            </div>
+        <div class="button">
+            <button type="submit">Опубликовать</button>
+        </div>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
